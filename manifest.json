@@ -1,0 +1,17 @@
+{
+    "name": "Twitch Autoclaimer",
+    "description": "Twitch channel bonus points autoclaimer",
+    "version": "1.0",
+    "manifest_version": 3,
+    "icons": {
+        "128": "icon.png"
+    },
+    "action": {
+        "default_title": "Twitch Autoclaimer",
+        "default_icon": "icon.png"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "permissions": ["storage", "activeTab", "scripting"]
+}
