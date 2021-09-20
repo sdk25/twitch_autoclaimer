@@ -13,6 +13,10 @@
     "background": {
         "service_worker": "background.js"
     },
-    "permissions": ["storage", "tabs", "activeTab", "scripting"],
-    "host_permissions": ["https://*.twitch.tv/*"]
+    "content_scripts": [{
+      "matches": ["https://www.twitch.tv/*"],
+      "js": ["content/container_observer.js"]
+    }],
+    "host_permissions": ["https://www.twitch.tv/*"],
+    "permissions": ["storage", "activeTab", "scripting"]
 }

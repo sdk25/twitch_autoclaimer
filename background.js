@@ -21,7 +21,7 @@ function clickEventHandler(tab) {
 
   chrome.scripting.executeScript({
     target: {tabId: tab.id},
-    files: ["content.js"]
+    files: ["content/button_observer.js"]
   })
 
   chrome.action.onClicked.removeListener(clickEventHandler)
@@ -31,9 +31,11 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.action.setBadgeBackgroundColor({color: "#4688F1"})
 })
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
-  if (changeInfo.url) {
-    if (/twitch\.tv/i.test(changeInfo.url)) {
+chrome.runtime.onMessage.addListener((request, sender) => {
+  const tabId = sender.tab.id
+
+  if (typeof request.ready !== 'undefined') {
+    if (request.ready) {
       chrome.action.setBadgeText({tabId: tabId, text: "RUN"})
       chrome.action.onClicked.addListener(clickEventHandler)
     } else {
@@ -41,9 +43,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
       chrome.action.onClicked.removeListener(clickEventHandler)
     }
   }
-})
 
-chrome.runtime.onMessage.addListener((request, sender) => {
-  const tabId = sender.tab.id
-  getCounter(tabId, value => setCounter(tabId, value + 1))
+  if (typeof request.inc !== 'undefined') {
+    getCounter(tabId, value => setCounter(tabId, value + 1))
+  }
 })
