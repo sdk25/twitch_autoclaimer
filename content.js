@@ -5,7 +5,6 @@ const observer = new MutationObserver((mutations, observer) => {
         const button = addedNode.querySelector("button[aria-label='Claim Bonus']")
         if (button) {
           button.click()
-          console.log("claimed!")
           chrome.runtime.sendMessage({})
         }
       }
