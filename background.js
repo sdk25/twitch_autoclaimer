@@ -16,26 +16,8 @@ function setCounter(tabId, newValue, callback) {
   }) 
 }
 
-function setEnabledState(tabId) {
-  chrome.action.setBadgeBackgroundColor({tabId: tabId, color: "#09AB3F"})
-  chrome.action.setBadgeText({tabId: tabId, text: "▶"})
-  chrome.action.setTitle({tabId: tabId, title: "Click to inject an autoclaimer"})
-}
-
-function setDisabledState(tabId) {
-  chrome.action.setBadgeBackgroundColor({tabId: tabId, color: "#940000"})
-  chrome.action.setBadgeText({tabId: tabId, text: "🞫"})
-  chrome.action.setTitle({tabId: tabId, title: "Go to any stream to enable"})
-}
-
-function setWorkingState(tabId) {
-  chrome.action.setBadgeBackgroundColor({tabId: tabId, color: "#4688F1"})
-  chrome.action.setBadgeText({tabId: tabId, text: "0"})
-  chrome.action.setTitle({tabId: tabId, title: "Autoclaimer is working.."})
-}
-
 function clickEventHandler(tab) {
-  setWorkingState(tab.id)
+  setCounter(tab.id, 0)
 
   chrome.scripting.executeScript({
     target: {tabId: tab.id},
@@ -45,13 +27,17 @@ function clickEventHandler(tab) {
   chrome.action.onClicked.removeListener(clickEventHandler)
 }
 
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.action.setBadgeBackgroundColor({color: "#4688F1"})
+})
+
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
   if (changeInfo.url) {
-    if (/twitch.tv\/.+/i.test(changeInfo.url)) {
-      setEnabledState(tabId)
+    if (/twitch\.tv/i.test(changeInfo.url)) {
+      chrome.action.setBadgeText({tabId: tabId, text: "RUN"})
       chrome.action.onClicked.addListener(clickEventHandler)
     } else {
-      setDisabledState(tabId)
+      chrome.action.setBadgeText({tabId: tabId, text: ""})
       chrome.action.onClicked.removeListener(clickEventHandler)
     }
   }
